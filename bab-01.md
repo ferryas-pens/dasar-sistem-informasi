@@ -40,7 +40,7 @@ Yang berubah bukan angkanya. Yang berubah adalah adanya keterangan mengenai apa 
 
 Hal kedua lebih besar. Sebelum Anda dapat berbicara mengenai data dan informasi, Anda perlu satu cara memandang yang menampung keduanya. Cara memandang itu bernama **sistem**.
 
-# **1.1 Sistem sebagai cara memandang**
+# **1.1 Sistem**
 
 Kata sistem digunakan sehari-hari untuk hampir apa pun. Ada sistem pencernaan, sistem tata surya, sistem antrean, sistem operasi, dan sistem informasi akademik. Karena dipakai untuk begitu banyak hal, kata itu terasa kurang jelas.
 
@@ -70,7 +70,7 @@ Sebuah sistem yang digambarkan secara lengkap memuat lima unsur.
 
 Dari kelima unsur itu, umpan balik paling sering hilang pada rancangan pemula. Sebuah sistem tanpa umpan balik dapat berjalan bertahun-tahun sambil menghasilkan keluaran yang keliru, sebab tidak ada jalur bagi kekeliruan itu untuk kembali.
 
-# **1.3 Batas adalah keputusan, bukan penemuan**
+# **1.3 Batas adalah keputusan, bukan menemukan masalah**
 
 Bagian ini memuat gagasan yang paling penting dalam bab ini, dan gagasan itu bertentangan dengan cara berpikir yang biasa.
 
@@ -100,7 +100,7 @@ Sekarang kembali ke angka 87.
 
 Perbedaan ketiganya bukan perbedaan tingkat kecanggihan, melainkan perbedaan jangkauan. Data berlaku untuk satu kejadian, informasi untuk satu pertanyaan, dan pengetahuan untuk banyak kejadian yang belum terjadi.
 
-## **1.4.1 Mengapa perbedaan ini berguna**
+## **1.4.1 Perbedaan istilah**
 
 Perbedaan ini bukan sekadar soal istilah. Ia menentukan letak persoalan apabila sesuatu tidak berjalan.
 
