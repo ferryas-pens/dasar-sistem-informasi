@@ -25,7 +25,7 @@ Mata kuliah ini membangun fondasi cara pandang sistem informasi bagi mahasiswa s
 
 ## Daftar Bab
 
-Judul diambil dari isi berkas hasil konversi. Kolom **Sub-CPMK**, **Minggu**, dan **Level** (Bloom) berasal dari `Blueprint-Buku-Ajar-DSI.md` — pemetaan pra-penulisan; finalkan terhadap RPS bila ada perbedaan. Catatan desain penting dari blueprint: **bab ≠ minggu perkuliahan** (satu bab dapat memakan dua minggu, dua bab dapat jatuh di satu minggu).
+Judul diambil dari isi berkas hasil konversi. Kolom **Sub-CPMK**, **Minggu**, dan **Level** (Bloom) berasal dari `Blueprint-Buku-Ajar-DSI.md` — pemetaan pra-penulisan; finalkan terhadap RPS bila ada perbedaan. Catatan desain penting dari blueprint: **bab ≠ minggu perkuliahan** (satu bab dapat memakan dua minggu atau dua bab dapat diajarkan sekaligus dalam satu minggu).
 
 | Bab | Judul | Sub-CPMK | Minggu | Level |
 | --- | --- | --- | --- | --- |
@@ -65,9 +65,7 @@ Berkas ini bukan bab, tetapi bagian dari buku ajar yang sama; ikut dikonversi ke
 - Berkas `.md` memakai referensi gambar relatif ke `asset/`. **Pertahankan seluruh berkas `.md` dalam satu folder bersama folder `asset/`.** Jika berkas `.md` dipindah keluar dari folder ini, tautan gambar akan putus.
 - Untuk pemakaian di LMS/GitHub, unggah folder ini secara utuh (termasuk `asset/`).
 
-## Sumber dan Verifikasi
 
-- Sumber materi: berkas Word buku ajar Dasar Sistem Informasi (Bab 1–12 + front/back matter + lampiran) di paket `DSI.zip`.
-- Konversi `.docx` → Markdown memakai **pandoc** (`-t gfm`). Gambar diekstrak dan dinamai ulang; tidak ada isi teks yang diubah.
-- Identitas MK dan deskripsi singkat ditarik dari RPS resmi; pemetaan Sub-CPMK/Minggu/Level ditarik dari blueprint pra-penulisan — **perlu diverifikasi** bila blueprint dan RPS final berbeda.
-- Batas fidelitas konversi (perlu Anda periksa jika penting): kotak definisi pada naskah asli muncul sebagai tabel satu sel di Markdown; sebagian heading mewarisi gaya dari naskah Word sehingga tingkatnya belum tentu rapi; gambar dipertahankan sebagai tag `<img>` dengan atribut ukuran aslinya.
+
+
+
