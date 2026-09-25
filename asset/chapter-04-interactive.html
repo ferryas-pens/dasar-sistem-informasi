@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seven Dimensions of Information Quality</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#F4F6F8; --surface:#FFFFFF; --ink:#18212E; --muted:#586576; --line:#D2D9E1; --soft:#EAEEF3;
+  --acc:#3730A3; --accSoft:#E6E5F7;
+  --ok:#15803D; --mid:#5B6B7F; --warn:#B45309; --bad:#B91C1C; --unk:#8A94A3;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#10151C; --surface:#18202A; --ink:#E7ECF2; --muted:#9AA7B6; --line:#334150; --soft:#202A36;
+    --acc:#A5B4FC; --accSoft:#272B4A;
+    --ok:#4ADE80; --mid:#A3B1C2; --warn:#FBBF24; --bad:#F87171; --unk:#6B7685;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10151C; --surface:#18202A; --ink:#E7ECF2; --muted:#9AA7B6; --line:#334150; --soft:#202A36;
+  --acc:#A5B4FC; --accSoft:#272B4A;
+  --ok:#4ADE80; --mid:#A3B1C2; --warn:#FBBF24; --bad:#F87171; --unk:#6B7685;
+}
+*{box-sizing:border-box}
+body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Instrument Sans",system-ui,sans-serif;font-size:16px;line-height:1.6}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:20px;padding-block:32px 56px;display:flex;flex-direction:column;gap:44px}
+h1,h2{font-family:Literata,Georgia,serif;font-weight:700;line-height:1.15;margin:0;text-wrap:balance}
+h1{font-size:clamp(30px,5vw,46px)}
+h2{font-size:clamp(22px,3vw,28px)}
+h3{font-size:17px;margin:0}
+p{margin:0}
+.lab{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.lede{max-width:64ch;color:var(--muted);font-size:17px}
+section{display:flex;flex-direction:column;gap:16px}
+.sechead{display:flex;flex-direction:column;gap:6px;max-width:68ch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font-size:13.5px;font-weight:600;color:var(--ink);text-decoration:none;padding:5px 11px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
+nav a:hover{border-color:var(--acc);color:var(--acc)}
+.thesis{font-family:Literata,Georgia,serif;font-size:clamp(20px,2.6vw,24px);line-height:1.35;border-left:4px solid var(--acc);padding:4px 0 4px 16px;max-width:60ch}
+.scroll{overflow-x:auto}
+svg text{font-family:"Instrument Sans",system-ui,sans-serif}
+button{font:inherit;cursor:pointer;color:var(--ink)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+/* dimensions */
+.dims{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+@media (max-width:820px){.dims{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:460px){.dims{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.dim{display:flex;flex-direction:column;gap:6px;align-items:flex-start;text-align:left;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.dim .num{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted)}
+.dim b{font-size:13px;line-height:1.25;overflow-wrap:break-word;hyphens:auto}
+.dim[aria-pressed="true"]{border-color:var(--acc);background:var(--accSoft);box-shadow:inset 0 0 0 1px var(--acc)}
+.ddetail{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px}
+@media (max-width:760px){.ddetail{grid-template-columns:1fr}}
+.q{font-family:Literata,Georgia,serif;font-size:21px;font-style:italic;line-height:1.35}
+.kv{display:flex;flex-direction:column;gap:4px}
+.pill{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:2px 10px;border-radius:999px;border:1.5px solid currentColor}
+.s-Baik{color:var(--ok)} .s-Sedang{color:var(--mid)} .s-Meragukan{color:var(--warn)} .s-Buruk{color:var(--bad)} .s-Tidak{color:var(--unk)}
+
+/* tradeoffs */
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{padding:7px 13px;border-radius:8px;border:1px solid var(--line);background:var(--surface);font-size:14px;font-weight:600}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.to{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:center}
+@media (max-width:760px){.to{grid-template-columns:1fr}}
+.bars{display:flex;flex-direction:column;gap:12px}
+.barrow{display:grid;grid-template-columns:130px 1fr;gap:10px;align-items:center;font-size:14px;font-weight:600}
+.track{height:14px;background:var(--soft);border-radius:7px;overflow:hidden}
+.fill{height:100%;background:var(--acc);border-radius:7px;transition:width .15s}
+.fill.b{background:var(--warn)}
+input[type=range]{width:100%;accent-color:var(--acc)}
+.ends{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);gap:12px}
+.note{font-size:13px;color:var(--muted)}
+.decider{background:var(--soft);border-radius:8px;padding:10px 14px;font-size:14.5px}
+
+/* data vs info */
+.dvi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.dvi{grid-template-columns:1fr}}
+.layer{border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;background:var(--surface)}
+.layer.top{border-color:var(--acc)}
+.layer dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14.5px}
+.layer dt{color:var(--muted)}
+.layer dd{margin:0}
+
+/* myths */
+.myths{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.myths{grid-template-columns:1fr}}
+.myth{text-align:left;border:1px solid var(--line);border-radius:10px;padding:16px;background:var(--surface);display:flex;flex-direction:column;gap:10px;min-height:170px}
+.myth .m{font-family:Literata,Georgia,serif;font-size:18px;line-height:1.3}
+.myth[aria-expanded="true"] .m{text-decoration:line-through;text-decoration-color:var(--bad);color:var(--muted)}
+.myth .c{font-size:14.5px}
+.myth .hint{font-size:12.5px;color:var(--acc);font-weight:600}
+
+/* checker */
+.chk{width:100%;border-collapse:collapse;font-size:14.5px;min-width:620px}
+.chk th,.chk td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.chk th{font-size:12px;font-family:"IBM Plex Mono",monospace;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.chk .qq{color:var(--muted);font-size:13px;font-style:italic}
+.seg{display:flex;flex-wrap:wrap;gap:4px}
+.seg button{font-size:12.5px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{color:var(--surface);border-color:transparent}
+.seg button[aria-pressed="true"].v-Baik{background:var(--ok)}
+.seg button[aria-pressed="true"].v-Sedang{background:var(--mid)}
+.seg button[aria-pressed="true"].v-Meragukan{background:var(--warn)}
+.seg button[aria-pressed="true"].v-Buruk{background:var(--bad)}
+.seg button[aria-pressed="true"].v-Tidak{background:var(--unk)}
+.chk input{width:100%;font:inherit;font-size:13.5px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.fields{grid-template-columns:1fr}}
+.fields label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--muted)}
+.fields input{font:inherit;font-size:14.5px;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font-weight:400}
+.strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.strip div{height:34px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;color:#fff;text-align:center;line-height:1.1;padding:2px}
+.sum{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{padding:7px 13px;border-radius:8px;border:1px solid var(--line);background:var(--surface);font-size:14px;font-weight:600}
+.btn:hover{border-color:var(--acc)}
+footer{font-size:13px;color:var(--muted)}
+footer a{color:inherit}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:14px">
+    <p class="lab">Fundamentals of Information Systems · Chapter 4 · Sub-CPMK 2</p>
+    <h1>Seven Dimensions of Information Quality</h1>
+    <p class="lede">A study aid for Chapter 4. Start with the opening story, get to know the seven dimensions, try the three trade-offs, then assess a real output with the checklist at the end.</p>
+    <nav aria-label="Page sections">
+      <a href="#pemantik">Correct ≠ useful</a><a href="#dimensi">7 dimensions</a><a href="#pertukaran">3 trade-offs</a><a href="#data">Data vs information</a><a href="#kaprah">Misconceptions</a><a href="#uji">Checklist</a>
+    </nav>
+  </header>
+
+  <!-- 1 -->
+  <section id="pemantik">
+    <div class="sechead">
+      <p class="lab">Opening story</p>
+      <h2>A number that is correct and already out of date</h2>
+      <p>Course registration day. The screen shows <b>3</b> places left. Four minutes later you press save, and the class is already full. Nothing was miscalculated anywhere.</p>
+    </div>
+    <div class="panel scroll">
+      <svg viewBox="0 0 870 220" width="100%" style="min-width:600px" role="img" aria-label="Timeline: your screen keeps showing 3 while the places on the server fall from 3 to 0 before you press save">
+        <line x1="150" y1="190" x2="830" y2="190" stroke="var(--line)" stroke-width="1.5"/>
+        <text x="170" y="210" font-size="13" fill="var(--muted)" text-anchor="middle">08.02</text>
+        <text x="790" y="210" font-size="13" fill="var(--muted)" text-anchor="middle">08.06</text>
+        <text x="480" y="210" font-size="13" fill="var(--muted)" text-anchor="middle">four minutes</text>
+        <!-- lane labels -->
+        <text x="0" y="64" font-size="14" font-weight="600" fill="var(--ink)">Your screen</text>
+        <text x="0" y="82" font-size="12" fill="var(--muted)">copy taken on load</text>
+        <text x="0" y="144" font-size="14" font-weight="600" fill="var(--ink)">Server</text>
+        <text x="0" y="162" font-size="12" fill="var(--muted)">actual state</text>
+        <!-- screen lane -->
+        <line x1="170" y1="70" x2="790" y2="70" stroke="var(--acc)" stroke-width="3"/>
+        <circle cx="170" cy="70" r="16" fill="var(--acc)"/><text x="170" y="75" font-size="15" font-weight="700" fill="var(--surface)" text-anchor="middle">3</text>
+        <text x="480" y="55" font-size="13" fill="var(--acc)" text-anchor="middle">stays at 3, never changes</text>
+        <!-- server lane -->
+        <path d="M170 150 H330 V150 M330 150 H500 M500 150 H660 M660 150 H790" stroke="var(--line)" stroke-width="3" fill="none"/>
+        <g font-size="14" font-weight="700" text-anchor="middle">
+          <circle cx="170" cy="150" r="16" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/><text x="170" y="155" fill="var(--ink)">3</text>
+          <circle cx="330" cy="150" r="16" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/><text x="330" y="155" fill="var(--ink)">2</text>
+          <circle cx="500" cy="150" r="16" fill="var(--surface)" stroke="var(--ink)" stroke-width="1.5"/><text x="500" y="155" fill="var(--ink)">1</text>
+          <circle cx="660" cy="150" r="16" fill="var(--bad)"/><text x="660" y="155" fill="var(--surface)">0</text>
+        </g>
+        <g font-size="12" fill="var(--muted)" text-anchor="middle">
+          <text x="330" y="124">someone else saves</text><text x="500" y="124">someone else saves</text><text x="660" y="124">someone else saves</text>
+        </g>
+        <!-- save -->
+        <line x1="790" y1="86" x2="790" y2="132" stroke="var(--bad)" stroke-width="2" stroke-dasharray="4 3"/>
+        <rect x="722" y="136" width="136" height="30" rx="6" fill="var(--bad)"/>
+        <text x="790" y="156" font-size="13" font-weight="700" fill="var(--surface)" text-anchor="middle">Save: class full</text>
+      </svg>
+      <p class="note" style="margin-top:8px">Sequence from the chapter's opening story. The timing of the other students' saves is illustrative; all the story says is that all three happened within those four minutes.</p>
+    </div>
+    <p class="thesis">Correct and useful are two different properties. The number three was correct, but it was no longer useful.</p>
+    <details class="panel">
+      <summary style="cursor:pointer;font-weight:600">Behind the scenes: why doesn't the system keep refreshing the number?</summary>
+      <p style="margin-top:10px">Thousands of students open the same page at the same moment. Refreshing the number every second would flood the system at exactly its busiest hour. So the system settles on a compromise: the number is shown as it was when the page loaded, and it is only confirmed when the save button is pressed. The system gives up <b>timeliness</b> for <b>accessibility</b>. That choice was made by people; it did not happen by itself.</p>
+    </details>
+  </section>
+
+  <!-- 2 -->
+  <section id="dimensi">
+    <div class="sechead">
+      <p class="lab">4.2 – 4.3</p>
+      <h2>Seven dimensions, seven test questions</h2>
+      <p>Each dimension has its own test question, so an assessment does not stop at an impression. Pick a dimension to see how it breaks and how it shows up in the exam timetable case study.</p>
+    </div>
+    <div class="dims" id="dims" role="group" aria-label="Seven dimensions"></div>
+    <div class="panel ddetail" id="ddetail" aria-live="polite"></div>
+  </section>
+
+  <!-- 3 -->
+  <section id="pertukaran">
+    <div class="sechead">
+      <p class="lab">4.4 – 4.5</p>
+      <h2>All seven cannot be maximised at once</h2>
+      <p>Move the slider to feel the trade-off. No position satisfies everyone, so the right question is who gets to choose the position.</p>
+    </div>
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <div class="panel to" id="topanel"></div>
+    <p class="note">Bar lengths illustrate the direction of the trade-off; they are not measurements.</p>
+  </section>
+
+  <!-- 4 -->
+  <section id="data">
+    <div class="sechead">
+      <p class="lab">4.6</p>
+      <h2>Information quality is not data quality</h2>
+      <p>Data quality concerns the content of a record. Information quality concerns how useful that record is for a decision. Anyone can check data quality; information quality cannot be checked without knowing which decision it is meant to serve.</p>
+    </div>
+    <div class="dvi">
+      <div class="layer">
+        <p class="lab">Lower layer · practised in Databases</p>
+        <h3>Data quality</h3>
+        <dl><dt>What is assessed</dt><dd>The content of the record itself</dd><dt>Need to know the decision?</dt><dd><b>No</b></dd><dt>Example of a defect</dt><dd>A mistyped address</dd></dl>
+      </div>
+      <div class="layer top">
+        <p class="lab" style="color:var(--acc)">Upper layer · practised in this chapter</p>
+        <h3>Information quality</h3>
+        <dl><dt>What is assessed</dt><dd>How useful the record is for a decision</dd><dt>Need to know the decision?</dt><dd><b>Yes</b></dd><dt>Example of a defect</dt><dd>A correct address that nobody needs at all</dd></dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section id="kaprah">
+    <div class="sechead">
+      <p class="lab">Common misconceptions</p>
+      <h2>Three assumptions to correct</h2>
+      <p>Guess what is wrong first, then click the card to see the correction.</p>
+    </div>
+    <div class="myths" id="myths"></div>
+  </section>
+
+  <!-- 6 -->
+  <section id="uji">
+    <div class="sechead">
+      <p class="lab">Exercise · what you will produce</p>
+      <h2>Quality checklist for an output</h2>
+      <p>The checklist is filled in with the exam timetable example from the chapter's case study (from the students' point of view). Click <b>Clear</b> to assess another output: a grade slip, an attendance dashboard, an announcement in the class group. Choose <b>Don't know</b> when you cannot answer the question.</p>
+    </div>
+    <div class="panel" style="display:flex;flex-direction:column;gap:16px">
+      <div class="fields">
+        <label for="fOut">Output being assessed<input id="fOut" type="text"></label>
+        <label for="fUser">User (point of view)<input id="fUser" type="text"></label>
+        <label for="fDec">Decision it serves<input id="fDec" type="text"></label>
+      </div>
+      <div class="scroll">
+        <table class="chk"><thead><tr><th style="width:26%">Dimension</th><th style="width:40%">Rating</th><th>Reason</th></tr></thead><tbody id="chkBody"></tbody></table>
+      </div>
+      <div class="sum" id="sum" aria-live="polite"></div>
+      <div class="row"><button class="btn" id="btnClear" type="button">Clear</button><button class="btn" id="btnEx" type="button">Load the exam timetable example</button></div>
+    </div>
+  </section>
+
+  <footer>Content based on <a href="https://github.com/ferryas-pens/dasar-sistem-informasi/blob/main/bab-04.md" target="_blank" rel="noopener">bab-04.md</a>, Figure 4.1, and Figure 4.2 of the Fundamentals of Information Systems textbook (D4 Informatics Engineering, PENS). English translation prepared for this page; there is no official English edition of Chapter 4 yet.</footer>
+</div>
+
+<script>
+// Internal keys match the CSS classes; LBL gives the English labels.
+const S = ["Baik","Sedang","Meragukan","Buruk","Tidak tahu"];
+const LBL = {"Baik":"Good","Sedang":"Fair","Meragukan":"Doubtful","Buruk":"Poor","Tidak tahu":"Don't know"};
+const cls = s => "s-"+s.split(" ")[0];
+const vcls = s => "v-"+s.split(" ")[0];
+const col = s => ({Baik:"var(--ok)",Sedang:"var(--mid)",Meragukan:"var(--warn)",Buruk:"var(--bad)"}[s]||"var(--unk)");
+const D = [
+ {n:"Accuracy", q:"Does the content match reality?",
+  rusak:"The record does not match reality. The cause may be a typing error, or a field filled in carelessly by someone who thinks it makes no sense. The second cause is far more common and far harder to find, because the result looks plausible.",
+  ex:["Baik","It is compiled from the programme's official data"]},
+ {n:"Timeliness", q:"Does it arrive before the decision is made?",
+  rusak:"The information arrives after the decision has been made. This is not the same as speed: a monthly report published on the 3rd is timely if the decision is made on the 5th, and useless if the decision is made on the 1st.",
+  ex:["Meragukan","Students cannot tell when the file was last updated"]},
+ {n:"Completeness", q:"Is any important part missing?",
+  rusak:"A part is missing without notice. A gap that is declared does not damage completeness; a hidden gap does, because readers assume what they received is whole.",
+  ex:["Baik","Every course and every class is listed"]},
+ {n:"Relevance", q:"Is it related to the decision being made?",
+  rusak:"The information has nothing to do with the decision at hand. This is the defect most often overlooked, because irrelevant information is still correct and still looks useful.",
+  ex:["Buruk","A student needs six rows and receives three hundred"]},
+ {n:"Consistency", q:"Is the content the same when taken from different sources?",
+  rusak:"Two sources give different figures for the same thing. Once people notice, they lose trust in both at once, including the one that was actually right.",
+  ex:["Meragukan","Some students still keep an old version of the file"]},
+ {n:"Traceability", q:"Can its origin be traced back?",
+  rusak:"No one can show where a figure came from. Information that cannot be traced cannot be corrected, because no one knows which part needs correcting.",
+  ex:["Buruk","There is no version number and no change log"]},
+ {n:"Accessibility", q:"Can the people who need it actually get it?",
+  rusak:"The information exists but does not reach the people who need it. A report filed neatly in a folder nobody opens meets the first six dimensions and fails the seventh, and that failure alone is enough to make it useless.",
+  ex:["Sedang","It can be downloaded, but it is hard to read on a phone screen"]}
+];
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+// Dimensions
+let cur = 0;
+const dims = document.getElementById("dims");
+dims.innerHTML = D.map((d,i)=>`<button type="button" class="dim" data-i="${i}" aria-pressed="${i===0}"><span class="num">${i+1}</span><b>${d.n}</b></button>`).join("");
+dims.addEventListener("click",e=>{const b=e.target.closest(".dim"); if(!b) return; cur=+b.dataset.i; renderDim();});
+function renderDim(){
+  dims.querySelectorAll(".dim").forEach((b,i)=>b.setAttribute("aria-pressed",i===cur));
+  const d=D[cur];
+  document.getElementById("ddetail").innerHTML = `
+   <div style="display:flex;flex-direction:column;gap:14px">
+     <p class="lab">Dimension ${cur+1} · test question</p>
+     <p class="q">${d.q}</p>
+     <div class="kv"><p class="lab">How it breaks</p><p>${d.rusak}</p></div>
+   </div>
+   <div style="display:flex;flex-direction:column;gap:10px;border-left:1px solid var(--line);padding-left:20px">
+     <p class="lab">On the exam timetable</p>
+     <span class="pill ${cls(d.ex[0])}">${LBL[d.ex[0]]}</span>
+     <p>${d.ex[1]}</p>
+     <p class="note">From the students' point of view. For the academic office, relevance is actually good, because they do need the whole timetable.</p>
+   </div>`;
+}
+renderDim();
+
+// Trade-offs
+const T = [
+ {a:"Timeliness", b:"Completeness", q:"Incomplete today, or complete next week?", l:"Publish today", r:"Wait until complete", who:"Decided by the person who has to make the decision.",
+  txt:"The trade-off faced most often. Waiting until it is complete means being late; publishing sooner means something is still missing. The person entitled to choose is the decision maker, not the person compiling the report."},
+ {a:"Accuracy", b:"Low cost", q:"Recalculate, or use an estimate?", l:"Use an estimate", r:"Recalculate everything", who:"Decided by how much is lost if the estimate is off.",
+  txt:"Extra precision always has a price. If the loss from an estimate being off is small, an expensive recalculation is not worth it."},
+ {a:"Completeness", b:"Accessibility", q:"Forty pages, or one page that gets read?", l:"One page", r:"Forty pages", who:"Decided by whether anyone reads it.",
+  txt:"The most often ignored, because it looks trivial. A more complete report is longer, and a longer report is read to the end less often. Adding pages that are all correct can still lower the overall quality."}
+];
+let tcur=0, tval=[50,50,50];
+const tabs=document.getElementById("tabs");
+tabs.innerHTML=T.map((t,i)=>`<button type="button" class="tab" role="tab" id="tab${i}" aria-selected="${i===0}" data-i="${i}">${t.a} versus ${t.b.toLowerCase()}</button>`).join("");
+tabs.addEventListener("click",e=>{const b=e.target.closest(".tab"); if(!b) return; tcur=+b.dataset.i; renderTO();});
+function renderTO(){
+  tabs.querySelectorAll(".tab").forEach((b,i)=>b.setAttribute("aria-selected",i===tcur));
+  const t=T[tcur], v=tval[tcur];
+  let A,B;
+  if(tcur===0){A=100-v*0.85; B=15+v*0.85;}
+  else if(tcur===1){A=25+v*0.75; B=100-v*0.85;}
+  else {A=20+v*0.8; B=100-v*0.8;}
+  document.getElementById("topanel").innerHTML=`
+   <div style="display:flex;flex-direction:column;gap:14px">
+     <p class="q">${t.q}</p>
+     <p>${t.txt}</p>
+     <p class="decider"><b>${t.who}</b></p>
+   </div>
+   <div style="display:flex;flex-direction:column;gap:14px">
+     <div class="bars">
+       <div class="barrow"><span>${t.a}</span><div class="track"><div class="fill" style="width:${A}%"></div></div></div>
+       <div class="barrow"><span>${t.b}</span><div class="track"><div class="fill b" style="width:${B}%"></div></div></div>
+     </div>
+     <label for="slide" class="lab" style="margin-top:6px">Chosen position</label>
+     <input id="slide" type="range" min="0" max="100" value="${v}" aria-valuetext="${v<34?t.l:v>66?t.r:'middle'}">
+     <div class="ends"><span>${t.l}</span><span>${t.r}</span></div>
+   </div>`;
+  document.getElementById("slide").addEventListener("input",e=>{tval[tcur]=+e.target.value; const s=document.activeElement===e.target; renderTO(); if(s) document.getElementById("slide").focus();});
+}
+renderTO();
+
+// Misconceptions
+const M=[
+ ["Correct information is always useful.","Correctness is one dimension out of seven. Information that is correct but late, irrelevant, or never reaches the person who needs it is of no use at all."],
+ ["The more complete, the better.","Completeness trades off against timeliness and accessibility. A more complete report comes out later and is read to the end less often."],
+ ["Information quality is a technical matter.","Most defects come from the people and process components, as you saw in Chapter 2. A field filled in carelessly by staff damages accuracy without a single technical fault."]
+];
+const myths=document.getElementById("myths");
+myths.innerHTML=M.map((m,i)=>`<button type="button" class="myth" aria-expanded="false" data-i="${i}"><span class="lab">Assumption ${i+1}</span><span class="m">“${m[0]}”</span><span class="c" hidden>${m[1]}</span><span class="hint">Show correction</span></button>`).join("");
+myths.addEventListener("click",e=>{const b=e.target.closest(".myth"); if(!b) return; const open=b.getAttribute("aria-expanded")!=="true"; b.setAttribute("aria-expanded",open); b.querySelector(".c").hidden=!open; b.querySelector(".hint").textContent=open?"Hide":"Show correction";});
+
+// Checklist
+const EX={out:"Final exam timetable (image file on the announcements page)",user:"Students",dec:"Turn up at the right room at the right time for each exam",rows:D.map(d=>({v:d.ex[0],r:d.ex[1]}))};
+let st=JSON.parse(JSON.stringify(EX));
+const body=document.getElementById("chkBody");
+function renderChk(){
+  document.getElementById("fOut").value=st.out; document.getElementById("fUser").value=st.user; document.getElementById("fDec").value=st.dec;
+  body.innerHTML=D.map((d,i)=>`<tr>
+    <td><b>${i+1}. ${d.n}</b><div class="qq">${d.q}</div></td>
+    <td><div class="seg" role="group" aria-label="Rating for ${d.n}">${S.map(s=>`<button type="button" class="${vcls(s)}" data-i="${i}" data-v="${s}" aria-pressed="${st.rows[i].v===s}">${LBL[s]}</button>`).join("")}</div></td>
+    <td><input type="text" id="r${i}" data-i="${i}" value="${esc(st.rows[i].r)}" aria-label="Reason for ${d.n}"></td></tr>`).join("");
+  renderSum();
+}
+function renderSum(){
+  const rows=st.rows, unk=D.filter((d,i)=>rows[i].v==="Tidak tahu"), empty=D.filter((d,i)=>!rows[i].v);
+  const weak=D.filter((d,i)=>rows[i].v==="Buruk"||rows[i].v==="Meragukan");
+  const msgs=[];
+  if(!st.user.trim()) msgs.push("Name the user. Information quality is always tied to its user, and an assessment that does not name one is incomplete.");
+  if(!st.dec.trim()) msgs.push("Name the decision it serves. Without it, relevance and timeliness cannot be assessed.");
+  if(unk.length) msgs.push(`Dimensions nobody has ever checked: <b>${unk.map(d=>d.n).join(", ")}</b>.`);
+  if(weak.length) msgs.push(`Weak points that need a proposed fix: <b>${weak.map(d=>d.n).join(", ")}</b>. Order your proposals from the cheapest.`);
+  if(!msgs.length && !empty.length) msgs.push("Every dimension is answered with no weak points. Check once more: has the content itself been confirmed correct? The seven dimensions assume it is.");
+  document.getElementById("sum").innerHTML=`
+    <p class="lab">Quality profile</p>
+    <div class="strip">${D.map((d,i)=>`<div style="background:${rows[i].v?col(rows[i].v):"var(--soft)"};color:${rows[i].v?"var(--surface)":"var(--muted)"}" title="${d.n}: ${rows[i].v?LBL[rows[i].v]:"not rated yet"}">${d.n}</div>`).join("")}</div>
+    ${msgs.map(m=>`<p>${m}</p>`).join("")}`;
+}
+body.addEventListener("click",e=>{const b=e.target.closest(".seg button"); if(!b) return; const i=+b.dataset.i; st.rows[i].v=b.dataset.v; b.parentElement.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b)); renderSum();});
+body.addEventListener("input",e=>{if(e.target.matches("input")) st.rows[+e.target.dataset.i].r=e.target.value;});
+[["fOut","out"],["fUser","user"],["fDec","dec"]].forEach(([id,k])=>document.getElementById(id).addEventListener("input",e=>{st[k]=e.target.value; renderSum();}));
+document.getElementById("btnClear").onclick=()=>{st={out:"",user:"",dec:"",rows:D.map(()=>({v:"",r:""}))}; renderChk();};
+document.getElementById("btnEx").onclick=()=>{st=JSON.parse(JSON.stringify(EX)); renderChk();};
+renderChk();
+</script>
+</body>
+</html>
