@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Information Value and Decisions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#F4F6F8; --surface:#FFFFFF; --ink:#18212E; --muted:#586576; --line:#D2D9E1; --soft:#EAEEF3;
+  --acc:#3730A3; --accSoft:#E6E5F7;
+  --ok:#15803D; --mid:#5B6B7F; --warn:#B45309; --bad:#B91C1C; --unk:#8A94A3;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#10151C; --surface:#18202A; --ink:#E7ECF2; --muted:#9AA7B6; --line:#334150; --soft:#202A36;
+    --acc:#A5B4FC; --accSoft:#272B4A;
+    --ok:#4ADE80; --mid:#A3B1C2; --warn:#FBBF24; --bad:#F87171; --unk:#6B7685;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10151C; --surface:#18202A; --ink:#E7ECF2; --muted:#9AA7B6; --line:#334150; --soft:#202A36;
+  --acc:#A5B4FC; --accSoft:#272B4A;
+  --ok:#4ADE80; --mid:#A3B1C2; --warn:#FBBF24; --bad:#F87171; --unk:#6B7685;
+}
+*{box-sizing:border-box}
+body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Instrument Sans",system-ui,sans-serif;font-size:16px;line-height:1.6}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:20px;padding-block:32px 56px;display:flex;flex-direction:column;gap:44px}
+h1,h2{font-family:Literata,Georgia,serif;font-weight:700;line-height:1.15;margin:0;text-wrap:balance}
+h1{font-size:clamp(30px,5vw,46px)}
+h2{font-size:clamp(22px,3vw,28px)}
+h3{font-size:17px;margin:0}
+p{margin:0}
+.lab{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.lede{max-width:64ch;color:var(--muted);font-size:17px}
+section{display:flex;flex-direction:column;gap:16px}
+.sechead{display:flex;flex-direction:column;gap:6px;max-width:68ch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:20px}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a{font-size:13.5px;font-weight:600;color:var(--ink);text-decoration:none;padding:5px 11px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
+nav a:hover{border-color:var(--acc);color:var(--acc)}
+.thesis{font-family:Literata,Georgia,serif;font-size:clamp(20px,2.6vw,24px);line-height:1.35;border-left:4px solid var(--acc);padding:4px 0 4px 16px;max-width:60ch}
+.scroll{overflow-x:auto}
+svg text{font-family:"Instrument Sans",system-ui,sans-serif}
+button{font:inherit;cursor:pointer;color:var(--ink)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+/* dimensions */
+.dims{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+@media (max-width:820px){.dims{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:460px){.dims{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.dim{display:flex;flex-direction:column;gap:6px;align-items:flex-start;text-align:left;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.dim .num{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted)}
+.dim b{font-size:14px;line-height:1.25;overflow-wrap:anywhere}
+.dim[aria-pressed="true"]{border-color:var(--acc);background:var(--accSoft);box-shadow:inset 0 0 0 1px var(--acc)}
+.ddetail{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px}
+@media (max-width:760px){.ddetail{grid-template-columns:1fr}}
+.q{font-family:Literata,Georgia,serif;font-size:21px;font-style:italic;line-height:1.35}
+.kv{display:flex;flex-direction:column;gap:4px}
+.pill{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:2px 10px;border-radius:999px;border:1.5px solid currentColor}
+.s-Baik{color:var(--ok)} .s-Sedang{color:var(--mid)} .s-Meragukan{color:var(--warn)} .s-Buruk{color:var(--bad)} .s-Tidak{color:var(--unk)}
+
+/* tradeoffs */
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{padding:7px 13px;border-radius:8px;border:1px solid var(--line);background:var(--surface);font-size:14px;font-weight:600}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.to{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:center}
+@media (max-width:760px){.to{grid-template-columns:1fr}}
+.bars{display:flex;flex-direction:column;gap:12px}
+.barrow{display:grid;grid-template-columns:130px 1fr;gap:10px;align-items:center;font-size:14px;font-weight:600}
+.track{height:14px;background:var(--soft);border-radius:7px;overflow:hidden}
+.fill{height:100%;background:var(--acc);border-radius:7px;transition:width .15s}
+.fill.b{background:var(--warn)}
+input[type=range]{width:100%;accent-color:var(--acc)}
+.ends{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);gap:12px}
+.note{font-size:13px;color:var(--muted)}
+.decider{background:var(--soft);border-radius:8px;padding:10px 14px;font-size:14.5px}
+
+/* data vs info */
+.dvi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.dvi{grid-template-columns:1fr}}
+.layer{border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;background:var(--surface)}
+.layer.top{border-color:var(--acc)}
+.layer dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14.5px}
+.layer dt{color:var(--muted)}
+.layer dd{margin:0}
+
+/* myths */
+.myths{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.myths{grid-template-columns:1fr}}
+.myth{text-align:left;border:1px solid var(--line);border-radius:10px;padding:16px;background:var(--surface);display:flex;flex-direction:column;gap:10px;min-height:170px}
+.myth .m{font-family:Literata,Georgia,serif;font-size:18px;line-height:1.3}
+.myth[aria-expanded="true"] .m{text-decoration:line-through;text-decoration-color:var(--bad);color:var(--muted)}
+.myth .c{font-size:14.5px}
+.myth .hint{font-size:12.5px;color:var(--acc);font-weight:600}
+
+/* checker */
+.chk{width:100%;border-collapse:collapse;font-size:14.5px;min-width:620px}
+.chk th,.chk td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.chk th{font-size:12px;font-family:"IBM Plex Mono",monospace;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.chk .qq{color:var(--muted);font-size:13px;font-style:italic}
+.seg{display:flex;flex-wrap:wrap;gap:4px}
+.seg button{font-size:12.5px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{color:var(--surface);border-color:transparent}
+.seg button[aria-pressed="true"].v-Baik{background:var(--ok)}
+.seg button[aria-pressed="true"].v-Sedang{background:var(--mid)}
+.seg button[aria-pressed="true"].v-Meragukan{background:var(--warn)}
+.seg button[aria-pressed="true"].v-Buruk{background:var(--bad)}
+.seg button[aria-pressed="true"].v-Tidak{background:var(--unk)}
+.chk input{width:100%;font:inherit;font-size:13.5px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.fields{grid-template-columns:1fr}}
+.fields label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--muted)}
+.fields input{font:inherit;font-size:14.5px;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font-weight:400}
+.strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.strip div{height:34px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;color:#fff;text-align:center;line-height:1.1;padding:2px}
+.sum{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{padding:7px 13px;border-radius:8px;border:1px solid var(--line);background:var(--surface);font-size:14px;font-weight:600}
+.btn:hover{border-color:var(--acc)}
+footer{font-size:13px;color:var(--muted)}
+footer a{color:inherit}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+<style>
+/* Bab 5 additions */
+.qn{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-weight:700;font-family:"IBM Plex Mono",monospace}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.hero2{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px}
+@media (max-width:760px){.hero2{grid-template-columns:1fr}}
+.big{font-family:Literata,Georgia,serif;font-size:64px;font-weight:700;line-height:1}
+.formula{font-family:Literata,Georgia,serif;font-size:clamp(18px,2.4vw,22px);line-height:1.5;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.formula .t{padding:4px 12px;border-radius:8px;background:var(--soft);white-space:nowrap}
+.formula .t.acc{background:var(--accSoft);color:var(--acc);font-weight:700}
+.costs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.costs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.cost{border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--surface);display:flex;flex-direction:column;gap:6px;font-size:14.5px}
+.cost.hl{border-color:var(--warn)}
+.cost b{font-size:15px}
+.att{display:flex;gap:3px;height:38px}
+.att div{flex:1;border-radius:4px;background:var(--acc);display:flex;align-items:center;justify-content:center;color:var(--surface);font-size:11px;font-weight:600;overflow:hidden;min-width:0}
+.matrix{display:grid;grid-template-columns:110px repeat(3,minmax(0,1fr));gap:6px;min-width:560px}
+.matrix .h{font-size:12.5px;font-family:"IBM Plex Mono",monospace;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);display:flex;align-items:end;padding:4px}
+.matrix .rh{font-weight:700;display:flex;align-items:center;padding:4px;font-size:14.5px}
+.cell{min-height:78px;border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:10px;text-align:left;font-size:14px;line-height:1.35;display:flex;flex-direction:column;gap:4px;justify-content:center}
+.cell.empty{border-style:dashed;color:var(--muted);font-style:italic}
+.cell[aria-pressed="true"]{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc);background:var(--accSoft)}
+.cell.ok{border-color:var(--ok);box-shadow:inset 0 0 0 1px var(--ok)}
+.cell.no{border-color:var(--bad);box-shadow:inset 0 0 0 1px var(--bad)}
+.cell small{color:var(--muted);font-size:12px}
+.quizq{font-family:Literata,Georgia,serif;font-size:20px}
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.step:last-child{border-bottom:none}
+.step .n{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-weight:700;font-family:"IBM Plex Mono",monospace}
+.step.stop .n{background:var(--bad);border-color:var(--bad);color:var(--surface)}
+.step.off{opacity:.38}
+.step .role{font-size:13px;font-style:italic;color:var(--muted)}
+.verdict{border-radius:10px;padding:14px 16px;font-weight:600;display:flex;flex-direction:column;gap:4px}
+.verdict.neg{background:color-mix(in srgb,var(--bad) 12%,var(--surface));border:1px solid var(--bad)}
+.verdict.pos{background:color-mix(in srgb,var(--ok) 12%,var(--surface));border:1px solid var(--ok)}
+.verdict.mid{background:var(--soft);border:1px solid var(--line)}
+.verdict span{font-weight:400;font-size:14.5px}
+.calc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:640px){.calc{grid-template-columns:1fr}}
+.calc label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--muted)}
+.calc input,.calc select,.form input,.form textarea{font:inherit;font-size:15px;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font-weight:400;width:100%}
+.out{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:640px){.out{grid-template-columns:1fr}}
+.out div{background:var(--soft);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.out b{font-size:22px;font-variant-numeric:tabular-nums}
+.out span{font-size:12.5px;color:var(--muted)}
+.life{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;position:relative}
+@media (max-width:760px){.life{grid-template-columns:1fr 1fr;gap:12px}}
+.life div{padding:12px 14px 12px 0;border-top:4px solid var(--line);display:flex;flex-direction:column;gap:4px;font-size:14px}
+.life div:nth-child(1){border-color:var(--ok)} .life div:nth-child(2){border-color:var(--mid)} .life div:nth-child(3){border-color:var(--warn)} .life div:nth-child(4){border-color:var(--bad)}
+.kinds{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.kinds{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:420px){.kinds{grid-template-columns:1fr}}
+.kind{border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--surface);display:flex;flex-direction:column;gap:6px;font-size:14px}
+.kind .how{margin-top:auto;padding-top:6px;border-top:1px dashed var(--line);font-weight:600}
+.kind.num .how{color:var(--ok)} .kind.nonum .how{color:var(--warn)}
+.form{display:flex;flex-direction:column;gap:14px}
+.form .qrow{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px}
+.form label{font-weight:600;font-size:14.5px;display:block;margin-bottom:4px}
+.yn{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.yn button{font-size:13px;padding:4px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);font-weight:600;color:var(--muted)}
+.yn button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (max-width:560px){.two{grid-template-columns:1fr}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:14px">
+    <p class="lab">Fundamentals of Information Systems · Chapter 5 · Sub-CPMK 2</p>
+    <h1>Information Value and Decisions</h1>
+    <p class="lede">A study aid for Chapter 5. Chapter 4 asked whether a piece of information is good. This chapter asks whether anything changes because of it, and whether that change is worth what it costs.</p>
+    <nav aria-label="Page sections">
+      <a href="#pemantik">Quality ≠ value</a><a href="#ongkos">Value and cost</a><a href="#matriks">9 decision boxes</a><a href="#taksir">4 questions</a><a href="#tambah">More data</a><a href="#uang">Not only money</a><a href="#kaprah">Misconceptions</a><a href="#lembar">Estimation sheet</a>
+    </nav>
+  </header>
+
+  <!-- 1 -->
+  <section id="pemantik">
+    <div class="sechead">
+      <p class="lab">Opening story</p>
+      <h2>A screen that changes nothing</h2>
+      <p>A small coffee shop puts up a screen showing how many customers it has had today, updated every minute. Three months later a student asks the owner: which decision has ever changed because of that number? The answer: none.</p>
+    </div>
+    <div class="hero2">
+      <div class="panel" style="display:flex;flex-direction:column;gap:12px">
+        <p class="lab">Quality by the seven dimensions of Chapter 4</p>
+        <div class="strip" style="grid-template-columns:repeat(4,minmax(0,1fr))" aria-label="Quality of the seven dimensions">
+          <div style="background:var(--ok)">Accuracy</div><div style="background:var(--ok)">Timeliness</div><div style="background:var(--ok)">Completeness</div><div style="background:var(--unk)">Relevance</div><div style="background:var(--ok)">Consistency</div><div style="background:var(--unk)">Traceability</div><div style="background:var(--ok)">Accessibility</div>
+        </div>
+        <p style="font-size:14.5px">The text says the number is correct, very timely, complete, consistent, and accessible, and concludes that its quality is very good. Relevance and traceability are not discussed in the story, so they are shown in grey here.</p>
+      </div>
+      <div class="panel" style="display:flex;flex-direction:column;gap:8px;justify-content:center">
+        <p class="lab">Decisions changed in 3 months</p>
+        <p class="big" style="color:var(--bad)">0</p>
+        <p>Its value is zero. Once the cost of the screen and electricity is counted, the net value is actually negative.</p>
+      </div>
+    </div>
+    <p class="thesis">Quality asks whether the information is good. Value asks whether anything changes because of it.</p>
+  </section>
+
+  <!-- 2 -->
+  <section id="ongkos">
+    <div class="sechead">
+      <p class="lab">5.1</p>
+      <h2>Information has value and it has a cost</h2>
+    </div>
+    <div class="panel" style="display:flex;flex-direction:column;gap:12px">
+      <p class="lab">Definition</p>
+      <div class="formula" aria-label="Value equals the outcome of the decision with the information minus the outcome without it, minus the cost">
+        <span class="t acc">Value</span><span>=</span><span>(</span><span class="t">decision outcome <b>with</b> the information</span><span>−</span><span class="t">decision outcome <b>without</b> it</span><span>)</span><span>−</span><span class="t">cost of obtaining it</span>
+      </div>
+      <p>The hidden condition: if no decision depends on the information, both outcomes are the same and the difference is zero, however good the information is.</p>
+    </div>
+    <p>For the organisation that produces it, every piece of information demands four costs:</p>
+    <div class="costs">
+      <div class="cost"><b>Recorder's time</b><span>Always taken from time spent on something else.</span></div>
+      <div class="cost"><b>Storage</b><span>Plus the upkeep that keeps it readable for years.</span></div>
+      <div class="cost hl"><b style="color:var(--warn)">Reader's attention</b><span>The most often forgotten. Storage gets cheaper; attention does not grow.</span></div>
+      <div class="cost"><b>Trust</b><span>Shrinks every time someone finds a wrong figure.</span></div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section id="matriks">
+    <div class="sechead">
+      <p class="lab">5.2 · Figure 5.1</p>
+      <h2>Nine decision boxes</h2>
+      <p>Decisions are classified by <b>management level</b> (their time horizon and frequency, not their importance) and by <b>structure</b> (whether there is a rule that leads anyone to the same answer). The example in each box comes from a small coffee shop.</p>
+    </div>
+    <div class="row">
+      <button type="button" class="btn" id="mExplore" aria-pressed="true">Explore</button>
+      <button type="button" class="btn" id="mQuiz" aria-pressed="false">Quiz: place the decision</button>
+    </div>
+    <div class="panel" style="display:flex;flex-direction:column;gap:14px">
+      <div id="quizBox" hidden style="display:flex;flex-direction:column;gap:6px"></div>
+      <div class="scroll"><div class="matrix" id="matrix"></div></div>
+      <div id="mInfo" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section id="taksir">
+    <div class="sechead">
+      <p class="lab">5.3 · Figure 5.2</p>
+      <h2>Four questions, answered in order</h2>
+      <p>The first question is a filter. Pick a case to see the four questions at work.</p>
+    </div>
+    <div class="tabs" role="tablist" id="caseTabs">
+      <button type="button" class="tab" role="tab" aria-selected="true" data-c="0">Customer count screen</button>
+      <button type="button" class="tab" role="tab" aria-selected="false" data-c="1">Recording waiting time</button>
+    </div>
+    <div class="panel" style="display:flex;flex-direction:column;gap:12px">
+      <div class="steps" id="steps"></div>
+      <div id="caseVerdict"></div>
+    </div>
+
+    <div class="panel" style="display:flex;flex-direction:column;gap:14px">
+      <div class="sechead" style="gap:4px">
+        <p class="lab">Recording cost calculator · waiting-time case study</p>
+        <h3>The cost is not money but disruption to the barista's work</h3>
+        <p style="font-size:14.5px">The starting values follow the text. The figure of 5 seconds per order is an <b>estimate, not a measurement</b>, and the whole calculation depends on it.</p>
+      </div>
+      <div class="calc">
+        <label for="cSec">Seconds per order<input id="cSec" type="number" min="0" step="1" value="5"></label>
+        <label for="cOrd">Orders per day<input id="cOrd" type="number" min="0" step="10" value="120"></label>
+        <label for="cMode">Recording pattern<select id="cMode"><option value="365">Every day, all year</option><option value="28" selected>2 busy weeks + 2 quiet weeks</option></select></label>
+      </div>
+      <div class="out" id="cOut" aria-live="polite"></div>
+      <p class="note">Calculator assumptions: the shop opens every day and a month is 30 days. These assumptions are not in the text and are used only for the arithmetic.</p>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section id="tambah">
+    <div class="sechead">
+      <p class="lab">5.4</p>
+      <h2>More data does not always mean more value</h2>
+      <p>The first and biggest reason: attention does not grow. Move the number of reports and watch a fixed amount of attention being split.</p>
+    </div>
+    <div class="panel" style="display:flex;flex-direction:column;gap:12px">
+      <label for="nRep" class="lab">Reports received by one manager: <b id="nRepV" style="color:var(--ink)">3</b></label>
+      <input id="nRep" type="range" min="1" max="15" value="3">
+      <div class="att" id="att" aria-hidden="true"></div>
+      <p id="attTxt"></p>
+      <p class="note">Illustration: the fixed bar width stands for one day's attention. Equal shares are a simplification.</p>
+    </div>
+    <div class="costs" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+      <div class="cost"><b>Attention does not grow</b><span>Adding one report can make ten other reports less useful.</span></div>
+      <div class="cost"><b>Extra data delays the decision</b><span>Asking for more data is often a polite way to postpone. Sometimes what is missing is not data but courage.</span></div>
+      <div class="cost"><b>Unused data quietly decays</b><span>A column nobody reads is a column nobody checks.</span></div>
+    </div>
+    <div class="panel" style="display:flex;flex-direction:column;gap:12px">
+      <p class="lab">Behind the scenes · the life of an unused report</p>
+      <div class="life">
+        <div><b>The first months</b><span>The author still checks it now and then; errors are found and fixed.</span></div>
+        <div><b>Months without a question</b><span>Checking stops. The report keeps coming out out of habit.</span></div>
+        <div><b>Nobody reads it</b><span>Not even its author. Errors pile up.</span></div>
+        <div><b>Years later</b><span>Its figures are used for a real decision: neat, and long since wrong.</span></div>
+      </div>
+    </div>
+    <p class="thesis">A test before adding anything: if this number changed, which decision would change with it? In Chapter 8 this test is called the <i>so-what test</i>.</p>
+  </section>
+
+  <!-- 6 -->
+  <section id="uang">
+    <div class="sechead">
+      <p class="lab">5.5</p>
+      <h2>Value is not always money</h2>
+      <p>Something that cannot be measured does not have zero value. Do not invent numbers. Write it down as a non-numeric consideration and leave the weighing to the people who bear the consequences.</p>
+    </div>
+    <div class="kinds">
+      <div class="kind num"><p class="lab">Money</p><span>Losses from ordering the wrong ingredients</span><span class="how">Can be calculated fairly precisely</span></div>
+      <div class="kind num"><p class="lab">Time</p><span>Working hours lost looking for files</span><span class="how">Can be calculated, then converted to money if needed</span></div>
+      <div class="kind nonum"><p class="lab">Safety</p><span>A dosage error in a health service</span><span class="how">Must not simply be converted to money</span></div>
+      <div class="kind nonum"><p class="lab">Trust</p><span>Customers who leave without complaining</span><span class="how">Hard to measure, but must not be ignored</span></div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section id="kaprah">
+    <div class="sechead">
+      <p class="lab">Common misconceptions</p>
+      <h2>Three assumptions to correct</h2>
+      <p>Guess what is wrong first, then click the card to see the correction.</p>
+    </div>
+    <div class="myths" id="myths"></div>
+  </section>
+
+  <!-- 8 -->
+  <section id="lembar">
+    <div class="sechead">
+      <p class="lab">Exercise · what you will produce</p>
+      <h2>Information value estimation sheet</h2>
+      <p>The sheet starts with the waiting-time case study. Click <b>Clear</b> to estimate another request for information, such as a daily attendance report, a dashboard of visits to the programme's website, or a form that asks for extra data.</p>
+    </div>
+    <div class="panel form" id="form"></div>
+  </section>
+
+  <footer>Content based on <a href="https://github.com/ferryas-pens/dasar-sistem-informasi/blob/main/bab-05.md" target="_blank" rel="noopener">bab-05.md</a>, Figure 5.1, and Figure 5.2 of the Fundamentals of Information Systems textbook (D4 Informatics Engineering, PENS). English translation prepared for this page; there is no official English edition of Chapter 5 yet.</footer>
+</div>
+
+<script>
+const esc = s => String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const $ = id => document.getElementById(id);
+
+// ---------- Matrix ----------
+const LV=["Strategic","Tactical","Operational"], SF=["Structured","Semi-structured","Unstructured"];
+const CELL=[
+ [null,"Should the lease be renewed?","Should we open a second shop?"],
+ ["When should we reorder coffee beans?","How many staff should be rostered on Saturday?","Should we add a new menu item?"],
+ ["How much change does this customer get?","Which order should be made first?","How should we respond to an angry customer?"]
+];
+const LVTXT={Strategic:"Made once every few years; the consequences last a long time.",Tactical:"Made a few times a year or a month; a medium time horizon.",Operational:"Made many times a day; the consequences are short-lived."};
+const SFTXT={Structured:"There is a clear rule. What helps: precise, up-to-date figures.","Semi-structured":"Partly rule-based, partly a matter of judgement.",Unstructured:"There is no rule; two equally reasonable people may decide differently. What helps: an overall picture, including things that are not numbers. Very detailed figures often just delay the decision."};
+let mode="explore", mSel=[1,0], quiz=[], qi=0, qScore=0, qFeedback=null;
+function renderMatrix(){
+  let h=`<div></div>${SF.map(s=>`<div class="h">${s}</div>`).join("")}`;
+  LV.forEach((l,r)=>{h+=`<div class="rh">${l}</div>`; SF.forEach((s,c)=>{
+    const t=CELL[r][c]; const sel=mode==="explore"&&mSel[0]===r&&mSel[1]===c;
+    let extra="";
+    if(mode==="quiz"&&qFeedback){ if(qFeedback.ans[0]===r&&qFeedback.ans[1]===c) extra=" ok"; else if(qFeedback.pick[0]===r&&qFeedback.pick[1]===c) extra=" no"; }
+    const label = mode==="quiz" ? (qFeedback&&qFeedback.ans[0]===r&&qFeedback.ans[1]===c ? esc(t||"") : "") : (t?esc(t):"rarely exists");
+    h+=`<button type="button" class="cell${!t&&mode==="explore"?" empty":""}${extra}" data-r="${r}" data-c="${c}" aria-pressed="${sel}" aria-label="${l}, ${s}${t&&mode==="explore"?": "+esc(t):""}">${label}${mode==="quiz"&&!label?`<small>${l} · ${s}</small>`:""}</button>`;
+  });});
+  $("matrix").innerHTML=h;
+  if(mode==="explore"){
+    const [r,c]=mSel, t=CELL[r][c];
+    $("mInfo").innerHTML=`<p class="lab">${LV[r]} × ${SF[c]}</p>
+      <p class="quizq" style="margin:6px 0">${t?esc(t):"This box is almost always empty."}</p>
+      <p style="font-size:14.5px">${r===0&&c===0?"Strategic decisions are very rarely structured. If a big decision feels as though it has a clear rule, the rule has usually been inherited without ever being re-examined.":`<b>${LV[r]}:</b> ${LVTXT[LV[r]]}<br><b>${SF[c]}:</b> ${SFTXT[SF[c]]}`}</p>`;
+  }
+}
+function newQuiz(){ quiz=[]; LV.forEach((_,r)=>SF.forEach((_,c)=>{if(CELL[r][c]) quiz.push([r,c]);})); for(let i=quiz.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[quiz[i],quiz[j]]=[quiz[j],quiz[i]];} qi=0; qScore=0; qFeedback=null; }
+function renderQuiz(){
+  const box=$("quizBox");
+  if(mode!=="quiz"){box.hidden=true; return;}
+  box.hidden=false;
+  if(qi>=quiz.length){ box.innerHTML=`<p class="lab">Finished</p><p class="quizq">Score ${qScore} out of ${quiz.length}</p><div class="row"><button class="btn" type="button" id="qAgain">Try the quiz again</button></div>`; $("qAgain").onclick=()=>{newQuiz();renderQuiz();renderMatrix();}; $("mInfo").innerHTML=""; return; }
+  const [r,c]=quiz[qi];
+  box.innerHTML=`<p class="lab">Decision ${qi+1} of ${quiz.length} · score ${qScore}</p><p class="quizq">“${esc(CELL[r][c])}”</p><p class="note">Click the box this decision belongs in.</p>`;
+  $("mInfo").innerHTML = qFeedback ? `<p><b style="color:${qFeedback.ok?"var(--ok)":"var(--bad)"}">${qFeedback.ok?"Correct.":"Not quite."}</b> According to Figure 5.1: <b>${LV[r]} × ${SF[c]}</b>. ${SFTXT[SF[c]]}</p><div class="row" style="margin-top:8px"><button class="btn" type="button" id="qNext">Next decision</button></div>` : "";
+  if(qFeedback) $("qNext").onclick=()=>{qi++; qFeedback=null; renderQuiz(); renderMatrix();};
+}
+$("matrix").addEventListener("click",e=>{const b=e.target.closest(".cell"); if(!b) return; const r=+b.dataset.r,c=+b.dataset.c;
+  if(mode==="explore"){mSel=[r,c]; renderMatrix(); return;}
+  if(qFeedback||qi>=quiz.length) return;
+  const ans=quiz[qi], ok=ans[0]===r&&ans[1]===c; if(ok) qScore++; qFeedback={ok,ans,pick:[r,c]}; renderMatrix(); renderQuiz();});
+$("mExplore").onclick=()=>{mode="explore"; $("mExplore").setAttribute("aria-pressed",true); $("mQuiz").setAttribute("aria-pressed",false); renderQuiz(); renderMatrix();};
+$("mQuiz").onclick=()=>{mode="quiz"; newQuiz(); $("mQuiz").setAttribute("aria-pressed",true); $("mExplore").setAttribute("aria-pressed",false); renderQuiz(); renderMatrix();};
+renderMatrix();
+
+// ---------- Four questions: worked cases ----------
+const QS=[["Which decision depends on it?","If none, stop here."],["What would you do without the information?","This is the baseline."],["How much is lost if the decision is wrong?","This is the upper limit of its value."],["What does it cost to obtain and maintain?","This is what gets subtracted."]];
+const CASES=[
+ {a:["None that the owner can name.","Exactly what happens now.","Not applicable, because there is no decision.","The price of the screen, electricity, and repairs if it breaks."], stop:0,
+  v:["neg","Zero difference, positive cost: the value is negative.","To be fair: the screen may have value for things that are not decisions, such as making the shop look busy. The four questions only estimate value for decision making."]},
+ {a:["Two tactical decisions, made every few months: adding one person at peak hours, and rearranging the barista's workstation.","Deciding by impression, based on complaints that come from only a small share of customers. The baseline is weak, so the difference is probably fairly large.","Adding a person who is not needed: several months' wages. Not adding one who is needed: customers who leave, by an unknown amount. The upper limit is at least several months' wages.","Two timestamps per order. The second is hard because the barista is holding a cup: roughly 5 seconds × 120 orders ≈ 10 minutes a day ≈ 5 hours a month."], stop:-1,
+  v:["pos","The value is positive and fairly large: worth doing.","A cheaper proposal: the decisions are made only every few months, so recording for 2 busy weeks and 2 quiet weeks is enough, at less than a tenth of the cost. The assumption that those four weeks represent the whole year has not been checked."]}
+];
+let ccur=0;
+function renderCase(){
+  document.querySelectorAll("#caseTabs .tab").forEach(b=>b.setAttribute("aria-selected",+b.dataset.c===ccur));
+  const C=CASES[ccur];
+  $("steps").innerHTML=QS.map((q,i)=>{const off=C.stop>=0&&i>C.stop, stop=C.stop===i;
+    return `<div class="step${off?" off":""}${stop?" stop":""}"><div class="n">${i+1}</div><div style="display:flex;flex-direction:column;gap:4px"><b>${q[0]}</b><span class="role">${q[1]}</span><span>${esc(C.a[i])}</span>${stop?`<span style="color:var(--bad);font-weight:600;font-size:14px">The filter works: there is no decision, so the remaining questions do not really need answering. The other answers are dimmed; the text still fills them in, in the table in 5.3.1, for completeness.</span>`:""}</div></div>`;}).join("");
+  $("caseVerdict").innerHTML=`<div class="verdict ${C.v[0]}">${C.v[1]}<span>${C.v[2]}</span></div>`;
+}
+$("caseTabs").addEventListener("click",e=>{const b=e.target.closest(".tab"); if(!b) return; ccur=+b.dataset.c; renderCase();});
+renderCase();
+
+// ---------- Cost calculator ----------
+function calc(){
+  const s=Math.max(0,+$("cSec").value||0), o=Math.max(0,+$("cOrd").value||0), days=+$("cMode").value;
+  const perDay=s*o/60, perMonth=perDay*30/60, total=perDay*days/60, full=perDay*365/60;
+  const fmt=(x,d=1)=>x.toLocaleString("en-GB",{maximumFractionDigits:d});
+  $("cOut").innerHTML=`<div><b>${fmt(perDay)} min</b><span>of recording per day</span></div>
+   <div><b>${fmt(perMonth)} h</b><span>per month if recorded every day</span></div>
+   <div><b>${fmt(total)} h</b><span>per year with the chosen pattern${days<365&&full>0?` (${fmt(total/full*100,0)}% of recording every day)`:""}</span></div>`;
+}
+["cSec","cOrd","cMode"].forEach(id=>$(id).addEventListener("input",calc)); calc();
+
+// ---------- Attention ----------
+function att(){
+  const n=+$("nRep").value; $("nRepV").textContent=n;
+  $("att").innerHTML=Array.from({length:n},(_,i)=>`<div style="opacity:${1-i*0.03}">${n<=8?Math.round(100/n)+"%":""}</div>`).join("");
+  $("attTxt").innerHTML=`Each report gets about <b>${Math.round(100/n)}%</b> of the attention. ${n>=8?"At this point most reports are only glanced at, and the errors in them are no longer found.":"Adding one more report shrinks the share of every other report; it does not just add one."}`;
+}
+$("nRep").addEventListener("input",att); att();
+
+// ---------- Misconceptions ----------
+const M=[
+ ["High-quality information is always valuable.","Quality asks whether information is good; value asks whether anything changes because of it. The coffee shop screen is high in quality and negative in value."],
+ ["Collecting data does no harm; it might come in handy.","Data collected without a clear decision takes up recorders' time, decays unnoticed, and uses up a fixed amount of attention. “It might come in handy” is a polite way of saying the first question in Figure 5.2 cannot be answered."],
+ ["If it cannot be measured, it need not be considered.","Safety and trust are hard to measure and still matter. Do not invent numbers for them; write them down as non-numeric considerations."]
+];
+$("myths").innerHTML=M.map((m,i)=>`<button type="button" class="myth" aria-expanded="false"><span class="lab">Assumption ${i+1}</span><span class="m">“${m[0]}”</span><span class="c" hidden>${m[1]}</span><span class="hint">Show correction</span></button>`).join("");
+$("myths").addEventListener("click",e=>{const b=e.target.closest(".myth"); if(!b) return; const open=b.getAttribute("aria-expanded")!=="true"; b.setAttribute("aria-expanded",open); b.querySelector(".c").hidden=!open; b.querySelector(".hint").textContent=open?"Hide":"Show correction";});
+
+// ---------- Estimation sheet ----------
+const EX={info:"A record of each customer's waiting time (from ordering to receiving)",
+ q1:"Adding one person at peak hours; rearranging the workstation. Both tactical, every few months.", has:"ya",
+ q2:"Deciding by impression, from complaints by a small share of customers.", same:"tidak",
+ q3:"At least one person's wages for several months; plus customers who leave (unknown).", loss:"",
+ q4:"≈ 10 min/day of disruption to the barista (estimate: 5 s × 120 orders). Can be cut by recording for only 4 weeks.", cost:"",
+ nonmoney:"The trust of customers who leave without complaining.", freq:"jarang"};
+let F=JSON.parse(JSON.stringify(EX));
+function yn(key,opts){return `<div class="yn" role="group">${opts.map(([v,l])=>`<button type="button" data-k="${key}" data-v="${v}" aria-pressed="${F[key]===v}">${l}</button>`).join("")}</div>`;}
+function renderForm(){
+  $("form").innerHTML=`
+   <label for="fInfo">Information requested<input id="fInfo" data-f="info" value="${esc(F.info)}"></label>
+   <div class="qrow"><div class="qn">1</div><div><label>Which decision depends on it?</label>${yn("has",[["ya","There is one, and it can be named"],["tidak","None / “it might come in handy”"]])}<input data-f="q1" aria-label="Decision that depends on it" value="${esc(F.q1)}"></div></div>
+   <div class="qrow"><div class="qn">2</div><div><label>What would be done without the information?</label>${yn("same",[["tidak","The decision could differ"],["ya","The decision would be the same"]])}<input data-f="q2" aria-label="Without the information" value="${esc(F.q2)}"></div></div>
+   <div class="qrow"><div class="qn">3</div><div><label>How much is lost if the decision is wrong? <span class="note">(upper limit)</span></label><div class="two"><input data-f="q3" aria-label="Loss if wrong" value="${esc(F.q3)}"><input data-f="loss" type="number" min="0" placeholder="Estimate in Rp (optional)" aria-label="Estimated loss in rupiah" value="${esc(F.loss)}"></div></div></div>
+   <div class="qrow"><div class="qn">4</div><div><label>What does it cost to obtain <i>and maintain</i>?</label><div class="two"><input data-f="q4" aria-label="Cost" value="${esc(F.q4)}"><input data-f="cost" type="number" min="0" placeholder="Estimate in Rp (optional)" aria-label="Estimated cost in rupiah" value="${esc(F.cost)}"></div></div></div>
+   <div class="two">
+     <div><label>How often is the decision made?</label>${yn("freq",[["sering","Daily/weekly"],["jarang","Every few months or less often"]])}</div>
+     <label for="fNon">Non-numeric value (safety, trust…)<input id="fNon" data-f="nonmoney" value="${esc(F.nonmoney)}"></label>
+   </div>
+   <div id="fVerdict" aria-live="polite"></div>
+   <div class="row"><button class="btn" type="button" id="fClear">Clear</button><button class="btn" type="button" id="fEx">Load the waiting-time example</button></div>`;
+  $("fClear").onclick=()=>{F={info:"",q1:"",has:"",q2:"",same:"",q3:"",loss:"",q4:"",cost:"",nonmoney:"",freq:""}; renderForm();};
+  $("fEx").onclick=()=>{F=JSON.parse(JSON.stringify(EX)); renderForm();};
+  verdict();
+}
+function verdict(){
+  let cls="mid", head, notes=[];
+  const loss=parseFloat(F.loss), cost=parseFloat(F.cost);
+  const rp=x=>"Rp "+x.toLocaleString("id-ID");
+  if(F.has==="tidak"){cls="neg"; head="Stop at question 1: the value for decision making is zero, and the cost makes it negative."; notes.push("Decline politely: ask which decision would change. If there is no answer, this information does not need to be produced yet.");}
+  else if(!F.has){head="Start with question 1: name the decision that depends on this information.";}
+  else if(F.same==="ya"){cls="neg"; head="Without the information the decision would be the same: the difference is zero, and the value is negative once the cost is counted.";}
+  else if(!F.same){head="Answer question 2: what is the baseline if this information does not exist?";}
+  else if(!isNaN(loss)&&!isNaN(cost)){
+    if(cost>=loss){cls="neg"; head=`The cost (${rp(cost)}) is not smaller than the upper limit of its value (${rp(loss)}): not worth it.`; notes.push("Information cannot be worth more than the loss it prevents.");}
+    else {cls="pos"; head=`The upper limit (${rp(loss)}) exceeds the cost (${rp(cost)}): worth considering.`; notes.push("The upper limit is not the actual value. The actual value is the difference between the decision with and without the information, which is usually smaller.");}
+  } else {cls="mid"; head="The filter has been passed. The final conclusion depends on comparing the upper limit (3) with the cost (4)."; notes.push("Enter rupiah estimates if you can, or describe the comparison in words, as in the case study.");}
+  if(F.has==="ya"&&F.freq==="jarang") notes.push("The decision is made rarely: the information does not need to be collected continuously. Consider recording for a short, representative period.");
+  if(F.q4&&!/maint|update|ongoing|month|day|year/i.test(F.q4)) notes.push("Make sure the cost of maintenance is included, not only the cost of setting it up.");
+  if(F.nonmoney.trim()) notes.push(`Non-numeric consideration: “${esc(F.nonmoney.trim().replace(/\.$/,""))}”. Do not convert it into rupiah; leave the weighing to the people who bear the consequences.`);
+  if(/estimat|≈|approx|rough/i.test(F.q3+F.q4)) notes.push("There are estimated figures. State plainly that they are estimates, not measurements.");
+  $("fVerdict").innerHTML=`<div class="verdict ${cls}">${head}${notes.map(n=>`<span>• ${n}</span>`).join("")}</div>`;
+}
+$("form").addEventListener("click",e=>{const b=e.target.closest(".yn button"); if(!b) return; F[b.dataset.k]=b.dataset.v; b.parentElement.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b)); verdict();});
+$("form").addEventListener("input",e=>{const k=e.target.dataset.f; if(k){F[k]=e.target.value; verdict();}});
+renderForm();
+</script>
+</body>
+</html>
