@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Peta Pikiran DSI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+:root{
+  --bg:#F3F5F7; --surface:#FFFFFF; --ink:#16202A; --muted:#5A6774; --line:#CBD3DB; --soft:#E6EBF0;
+  --b1:#0F766E; --b2:#B45309; --b3:#4338CA; --b4:#BE123C; --b5:#15803D; --b0:#475569;
+  --root:#16202A; --rootInk:#FFFFFF;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0F151B; --surface:#17202A; --ink:#E6ECF1; --muted:#95A3B0; --line:#33414E; --soft:#1F2A35;
+    --b1:#2DD4BF; --b2:#F59E0B; --b3:#A5B4FC; --b4:#FB7185; --b5:#4ADE80; --b0:#94A3B8;
+    --root:#E6ECF1; --rootInk:#0F151B;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0F151B; --surface:#17202A; --ink:#E6ECF1; --muted:#95A3B0; --line:#33414E; --soft:#1F2A35;
+  --b1:#2DD4BF; --b2:#F59E0B; --b3:#A5B4FC; --b4:#FB7185; --b5:#4ADE80; --b0:#94A3B8;
+  --root:#E6ECF1; --rootInk:#0F151B;
+}
+*{box-sizing:border-box}
+body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Figtree,system-ui,sans-serif;font-size:15px;line-height:1.55}
+.wrap{max-width:1280px;margin:0 auto;padding-inline:20px;padding-block:28px 48px;display:flex;flex-direction:column;gap:20px}
+header{display:flex;flex-wrap:wrap;gap:12px 32px;align-items:end;justify-content:space-between}
+h1{font-family:"Bricolage Grotesque",Figtree,sans-serif;font-weight:700;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0;text-wrap:balance}
+.eyebrow{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:12px;padding:3px 9px;border:1px solid var(--line);border-radius:999px;color:var(--muted);background:var(--surface)}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bar button{font:inherit;font-size:13px;font-weight:600;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.bar button:hover{border-color:var(--ink)}
+.bar button:focus-visible,.node:focus-visible{outline:2px solid var(--b3);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-left:auto;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.map{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:auto;max-height:78vh}
+.map svg{display:block}
+.link{fill:none;stroke-width:1.6;opacity:.55}
+.node{cursor:pointer}
+.node text{font-family:Figtree,system-ui,sans-serif;fill:var(--ink)}
+.node .pill{stroke-width:1.5}
+.lvl1 text{font-weight:600;font-size:13px}
+.lvl2 text{font-weight:600;font-size:13px}
+.lvl3 text{font-size:12.5px;fill:var(--muted)}
+.node.sel .pill{stroke-width:3}
+.hint{font-size:13px;color:var(--muted);margin:0}
+.detail{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:24px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:22px}
+@media (max-width:760px){.detail{grid-template-columns:1fr}}
+.detail h2{font-family:"Bricolage Grotesque",Figtree,sans-serif;font-size:22px;margin:0 0 8px;text-wrap:balance}
+.detail h3{font-size:12px;font-family:"JetBrains Mono",ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:16px 0 6px}
+.detail ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:5px}
+.detail a{color:inherit}
+.case{border-left:3px solid var(--acc,var(--b0));padding:6px 12px;background:var(--soft);border-radius:0 8px 8px 0}
+footer{font-size:12.5px;color:var(--muted)}
+footer a{color:inherit}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">TI 26 04 1 1 03 · D4 Teknik Informatika PENS</p>
+      <h1>Peta Pikiran Dasar Sistem Informasi</h1>
+    </div>
+    <div class="meta">
+      <span class="chip">2 sks</span><span class="chip">Semester 1</span><span class="chip">12 bab · 5 bagian</span><span class="chip">Sub-CPMK 1–5</span>
+    </div>
+  </header>
+
+  <div class="bar">
+    <button id="btnBab" type="button">Tampilkan sampai bab</button>
+    <button id="btnAll" type="button">Buka semua subbab</button>
+    <div class="legend" id="legend"></div>
+  </div>
+  <p class="hint">Klik simpul untuk membuka atau menutup cabangnya. Klik bab untuk melihat ringkasannya di bawah peta.</p>
+
+  <div class="map" id="map"></div>
+
+  <section class="detail" id="detail" aria-live="polite"></section>
+
+  <footer>Sumber: README dan berkas bab pada repositori <a href="https://github.com/ferryas-pens/dasar-sistem-informasi" target="_blank" rel="noopener">ferryas-pens/dasar-sistem-informasi</a>. Poin kunci diambil dari bagian Rangkuman tiap bab, diringkas seperlunya.</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+const BAGIAN = [
+ {id:"b1", name:"I · Memahami Sistem Informasi", bab:[
+  {n:1, t:"Sistem, Data, dan Informasi", cp:"Sub-1", mg:"1", lv:"K1–K2", file:"bab-01.md",
+   sub:["1.1 Sistem sebagai cara memandang","1.2 Unsur sistem: masukan, proses, keluaran, umpan balik, batas","1.3 Batas adalah keputusan","1.4 Data, informasi, pengetahuan","1.5 SI bukan sinonim aplikasi"],
+   kasus:"Menarik batas pada pengisian rencana studi",
+   poin:["Sistem bukan jenis benda, melainkan cara memandang benda.","Umpan balik adalah unsur yang paling sering hilang.","Batas ditetapkan menurut pertanyaan yang hendak dijawab: cukup lebar untuk memuat masalah, cukup sempit untuk diselesaikan.","Data berlaku untuk satu kejadian, informasi untuk satu pertanyaan, pengetahuan untuk kejadian yang belum terjadi.","Sistem informasi tidak menuntut perangkat lunak."]},
+  {n:2, t:"Anatomi Sistem Informasi", cp:"Sub-1", mg:"1–2", lv:"K2", file:"bab-02.md",
+   sub:["2.1 Empat komponen: manusia, proses, data, teknologi","2.2 Mengapa keempatnya setara","2.3 Sistem sosio-teknis","2.4 Empat cara sistem gagal","2.5 Membongkar layanan dalam 4 langkah"],
+   kasus:"Pembayaran dengan kode QR di kantin",
+   poin:["Keempat komponen setara: masing-masing dapat membatalkan kerja ketiga lainnya.","Teknologi terasa paling penting karena kegagalannya paling mudah terlihat.","Titik lemah adalah komponen yang kegagalannya tidak ditahan oleh apa pun (penahan).","Data yang tersedia tetapi tidak dipakai sama saja dengan data yang tidak ada."]},
+  {n:3, t:"Profesi dan Peran di Bidang TI", cp:"Sub-1", mg:"2", lv:"K1–K2", file:"bab-03.md",
+   sub:["3.1 Enam peran dan pekerjaannya","3.2 Profil lulusan program studi","3.3 Peran terdekat: analis sistem","3.4 Pengantar etika profesi","3.5 Rencana belajar pribadi"],
+   kasus:"Rencana belajar untuk satu peran",
+   poin:["Sebagian peran hampir tidak menulis kode, dan itu bukan berarti kurang teknis.","Kesalahan analis berbentuk sistem lancar yang menyelesaikan masalah yang salah.","Rencana belajar yang berguna berukuran kecil, dapat diperiksa, dan boleh berubah."]}
+ ]},
+ {id:"b2", name:"II · Informasi yang Bernilai", bab:[
+  {n:4, t:"Kualitas Informasi", cp:"Sub-2", mg:"3", lv:"K2", file:"bab-04.md",
+   sub:["4.1 Kualitas bukan satu hal","4.2 Tujuh dimensi dan pertanyaan pengujinya","4.3 Bagaimana tiap dimensi rusak","4.4 Tidak dapat dimaksimalkan sekaligus","4.5 Siapa yang menentukan cukup","4.6 Kualitas informasi ≠ kualitas data"],
+   kasus:"Papan jadwal ujian",
+   poin:["Benar dan berguna adalah dua sifat yang berbeda.","Ketepatan waktu berarti tiba sebelum keputusan diambil, bukan sekadar cepat.","Kualitas adalah kompromi yang dipilih sadar oleh pengambil keputusan.","Kualitas data dapat dinilai tanpa tahu keputusannya; kualitas informasi tidak."]},
+  {n:5, t:"Nilai Informasi dan Pengambilan Keputusan", cp:"Sub-2", mg:"4", lv:"K2", file:"bab-05.md",
+   sub:["5.1 Nilai dan ongkos informasi","5.2 Tingkat manajemen dan jenis keputusan","5.3 Menaksir nilai informasi","5.4 Tambah data ≠ tambah nilai","5.5 Nilai tidak selalu uang"],
+   kasus:"Haruskah kedai kopi mencatat waktu tunggu",
+   poin:["Nilai = selisih hasil keputusan dengan dan tanpa informasi, dikurangi ongkosnya.","Perhatian pembaca adalah ongkos yang paling sering dilupakan.","Informasi tidak mungkin bernilai lebih besar daripada kerugian yang dicegahnya.","Permintaan data tambahan sering merupakan cara sopan menunda keputusan."]}
+ ]},
+ {id:"b3", name:"III · Organisasi dan Proses", bab:[
+  {n:6, t:"Organisasi, Struktur, dan Rantai Nilai", cp:"Sub-3", mg:"5", lv:"K2", file:"bab-06.md",
+   sub:["6.1 Mengapa organisasi dibagi","6.2 Struktur Laundry Nusa","6.3 Rantai nilai: utama vs pendukung","6.4 Perbatasan: tempat informasi tersendat","6.5 Struktur menentukan apa yang mudah diketahui"],
+   kasus:"Sebuah kepanitiaan mahasiswa",
+   poin:["Bagan struktur menyatakan siapa bertanggung jawab kepada siapa, bukan alur kerja.","Aktivitas pendukung sering dilupakan ketika sistem dibangun.","Informasi paling mungkin tersendat di perbatasan, tempat pekerjaan berpindah tangan."]},
+  {n:7, t:"Proses Bisnis dan Pemodelan Alur Kerja", cp:"Sub-3", mg:"6", lv:"K3", file:"bab-07.md",
+   sub:["7.1 Apa itu proses bisnis","7.2 Enam unsur model","7.3 Notasi: lima elemen, tujuh aturan","7.4 Baca dulu, gambar kemudian; uji telusur","7.5 Narasi ke model: enam langkah","7.6 Sampai seberapa rinci","7.7 Enam kesalahan lazim"],
+   kasus:"Penerimaan sampai pengembalian di Gerai Keputih",
+   poin:["Proses bisnis: aktivitas dengan pelaku, pemicu, dan hasil bernilai bagi pihak tertentu.","Setiap aktivitas harus berada di lajur seorang aktor.","Uji telusur: satu kasus biasa, satu jarang, satu gagal.","Kesalahan paling berbahaya: memodelkan proses yang diinginkan, bukan yang berjalan."]},
+  {n:8, t:"Menurunkan Kebutuhan Informasi dari Proses Bisnis", cp:"Sub-3", mg:"7", lv:"K3", file:"bab-08.md",
+   sub:["8.1 Tiga lapis dan dua arah","8.2 Bertanya dari sisi keputusan","8.3 Tabel kebutuhan informasi (7 kolom)","8.4 Tempat lahir data","8.5 Kekerapan dan ketepatan waktu","8.6 Ongkos pencatatan","8.7 Batas pencatatan"],
+   kasus:"Gerai mana yang perlu dibenahi lebih dahulu",
+   poin:["Data mengalir ke atas, tetapi perancangan berjalan dari keputusan ke bawah.","Keputusan yang tak pernah diambil ditemukan lewat keluhan yang berulang.","Data yang tidak terjadi menuntut perubahan proses, bukan tambahan kolom.","Pencatatan tidak dapat menjawab soal peristiwa yang tidak terjadi dan soal sebab."]}
+ ]},
+ {id:"b4", name:"IV · Ragam Sistem Informasi", bab:[
+  {n:9, t:"Ragam SI: TPS, MIS, DSS, dan ESS", cp:"Sub-4", mg:"8–9", lv:"K3–K4", file:"bab-09.md",
+   sub:["9.1 Mengapa perlu digolongkan","9.2 Empat jenis menurut tingkat keputusan","9.3 TPS: mencatat kejadian","9.4 MIS: meringkas yang tercatat","9.5 DSS: membandingkan pilihan","9.6 ESS: melihat dari jauh","9.7 Saling memberi makan","9.8 Mencocokkan jenis dengan masalah","9.9 Tiga pertanyaan sebelum menerima keluaran"],
+   kasus:"Tiga masalah Pak Hardi",
+   poin:["Penggolongan berguna sebagai alat untuk menolak, bukan hafalan istilah.","TPS: catatan bertambah, tidak berkurang. Mencoret ≠ membatalkan.","DSS tidak mengambil keputusan; yang memutuskan adalah penanggung akibatnya.","Mutu susunan ditentukan lapis paling bawah; keyakinan justru bertambah ke atas.","Anak tangga pertama sering kali perbaikan proses, bukan sistem."]},
+  {n:10, t:"Enterprise Systems dan Keunggulan Kompetitif", cp:"Sub-4", mg:"10", lv:"K3–K4", file:"bab-10.md",
+   sub:["10.1 Pulau data","10.2 ERP, CRM, SCM: tiga arah pandang","10.3 Integrasi adalah gagasan, bukan produk","10.4 Mengapa proyek sering gagal","10.5 SI dan keunggulan kompetitif","10.6 Beli, sewa, atau bangun sendiri"],
+   kasus:"Rekomendasi pengadaan untuk Laundry Nusa",
+   poin:["Integrasi: satu kejadian dicatat sekali, dipakai semua bagian.","Yang mahal adalah kesepakatan istilah, kode, waktu, dan kewenangan.","Keunggulan dari perangkat lunak mudah ditiru; dari proses dan kebiasaan sulit ditiru.","Bangun sendiri hanya untuk bagian pembeda; beli atau sewa untuk selebihnya."]}
+ ]},
+ {id:"b5", name:"V · Tanggung Jawab dan Arah ke Depan", bab:[
+  {n:11, t:"Keamanan, Privasi, dan Regulasi Pelindungan Data", cp:"Sub-5", mg:"11", lv:"K2", file:"bab-11.md",
+   sub:["11.1 Kerahasiaan, keutuhan, ketersediaan","11.2 Aset informasi dan pemiliknya","11.3 Privasi berbeda dari keamanan","11.4 UU Pelindungan Data Pribadi","11.5 Keadaan penerapannya"],
+   kasus:"Formulir pendaftaran kegiatan kampus",
+   poin:["Ketersediaan paling sering dilupakan.","Keamanan: apakah data terlindungi. Privasi: bolehkah data dikumpulkan.","UU No. 27/2022 berlaku penuh sejak 17 Oktober 2024 (per naskah).","Data yang tidak dikumpulkan adalah data yang tidak dapat bocor."]},
+  {n:12, t:"Etika Profesi, Dampak Sosial, dan Tren Teknologi", cp:"Sub-5", mg:"12–13", lv:"K2–K3", file:"bab-12.md",
+   sub:["12.1 Apa yang membedakan profesi","12.2 Tanggung jawab yang tak dipegang siapa pun","12.3 Dampak sosial dan keberlanjutan","12.4 Menilai klaim teknologi baru","12.5 Tren: awan, big data, AI"],
+   kasus:"Penilaian otomatis pada seleksi asisten praktikum",
+   poin:["Etika di bidang ini: jarak antara pembuat dan penanggung akibat.","Sistem keliru yang tak dapat dibantah menimbulkan ketidakadilan.","Empat pertanyaan: masalah apa, siapa menanggung ongkos, apa yang memburuk, apa yang terjadi bila berhenti.","AI mempelajari pola masa lalu, termasuk ketidakadilannya."]}
+ ]}
+];
+const PENDUKUNG = {id:"b0", name:"Berkas Pendukung", items:[
+  ["Bagian depan","Kata pengantar, anatomi bab, peta buku, pengenalan Laundry Nusa (kasus Bab 6–10)"],
+  ["Bagian belakang","Glosarium dan kunci jawaban latihan tingkat A"],
+  ["Bab 8 versi pemantik","Pembuka berbasis kasus: buku catatan Gerai Keputih"],
+  ["Panduan penilaian","Khusus dosen: kunci latihan B, rubrik latihan C"],
+  ["Kasus cadangan","Unit Layanan Peralatan Laboratorium"],
+  ["Versi Inggris","chapter-01, chapter-02 + PPT Bab 1–2"]
+]};
+
+// Build hierarchy
+const root = {name:"Dasar Sistem Informasi", kind:"root", children:[]};
+BAGIAN.forEach(b=>{
+  root.children.push({name:b.name, kind:"bagian", grp:b.id, children:b.bab.map(x=>({
+    name:`Bab ${x.n} · ${x.t}`, kind:"bab", grp:b.id, data:x,
+    children:[...x.sub.map(s=>({name:s, kind:"sub", grp:b.id})), {name:"Kasus: "+x.kasus, kind:"sub", grp:b.id, isCase:true}]
+  }))});
+});
+root.children.push({name:PENDUKUNG.name, kind:"bagian", grp:"b0", children:PENDUKUNG.items.map(([a,d])=>({name:a, kind:"bab", grp:"b0", note:d}))});
+
+const css = v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const color = g=>`var(--${g})`;
+
+// Legend
+document.getElementById("legend").innerHTML = BAGIAN.map(b=>`<span><i style="background:${color(b.id)}"></i>${b.name.split(" · ")[0]}</span>`).join("")+`<span><i style="background:var(--b0)"></i>Pendukung</span>`;
+
+const h = d3.hierarchy(root);
+h.descendants().forEach((d,i)=>{d.id=i; if(d.depth>=2 && d.children){d._children=d.children; d.children=null;}});
+let selected = null;
+
+const map = document.getElementById("map");
+const svg = d3.select(map).append("svg");
+const gLink = svg.append("g"), gNode = svg.append("g");
+const dx = 30, colW=[0,230,300,330];
+const measure = document.createElement("canvas").getContext("2d");
+function textW(t,kind){measure.font=(kind==="sub"?"12.5px ":"600 13px ")+"Figtree, system-ui, sans-serif";return measure.measureText(t).width;}
+function wrapLabel(t,kind){const max = kind==="bab"?300: kind==="sub"?330:250; if(textW(t,kind)<=max||kind==="root") return t; let s=t; while(textW(s+"…",kind)>max) s=s.slice(0,-1); return s+"…";}
+
+function update(){
+  const layout = d3.tree().nodeSize([dx, 1]);
+  layout(h);
+  const colX=[0,235,545,900]; h.each(d=>d.yy=colX[d.depth]);
+  let x0=Infinity,x1=-Infinity; h.each(d=>{x0=Math.min(x0,d.x);x1=Math.max(x1,d.x);});
+  const hasSub = h.descendants().some(d=>d.depth===3);
+  const W = hasSub? 1270 : 890, H = x1-x0+dx*2;
+  svg.attr("width",W).attr("height",H).attr("viewBox",[-20, x0-dx, W, H]);
+
+  const nodes = h.descendants(), links = h.links();
+  const L = gLink.selectAll("path").data(links, d=>d.target.id);
+  L.join(enter=>enter.append("path").attr("class","link"))
+   .attr("stroke", d=>d.target.data.grp?color(d.target.data.grp):css("--line"))
+   .attr("d", d=>{const sx=d.source.yy+nodeW(d.source), sy=d.source.x, tx=d.target.yy, ty=d.target.x, m=(sx+tx)/2; return `M${sx},${sy}C${m},${sy} ${m},${ty} ${tx},${ty}`;});
+
+  const N = gNode.selectAll("g.node").data(nodes, d=>d.id);
+  const en = N.enter().append("g").attr("class",d=>"node lvl"+d.depth).attr("tabindex",0).attr("role","button")
+    .on("click",(e,d)=>act(d)).on("keydown",(e,d)=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();act(d);}});
+  en.append("rect").attr("class","pill");
+  en.append("text").attr("dy","0.34em");
+  en.append("title");
+  N.exit().remove();
+  const all = en.merge(N);
+  all.attr("transform",d=>`translate(${d.yy},${d.x})`).classed("sel",d=>d===selected);
+  all.select("title").text(d=>d.data.note? d.data.name+": "+d.data.note : d.data.name);
+  all.select("text").text(d=>wrapLabel(d.data.name,d.data.kind)).attr("x",d=>d.data.kind==="sub"?10:12)
+     .style("fill",d=>d.depth===0?"var(--rootInk)":null)
+     .style("font-family",d=>d.depth===0?'"Bricolage Grotesque", Figtree, sans-serif':null)
+     .style("font-size",d=>d.depth===0?"15px":null).style("font-weight",d=>d.depth===0?700:null)
+     .style("font-style",d=>d.data.isCase?"italic":null);
+  all.select("rect").attr("x",0).attr("y",d=>d.data.kind==="sub"?-10:-12).attr("rx",d=>d.data.kind==="sub"?5:8)
+     .attr("height",d=>d.data.kind==="sub"?20:24).attr("width",d=>nodeW(d))
+     .attr("fill",d=>d.depth===0?"var(--root)": d.depth===1? `color-mix(in srgb, ${color(d.data.grp)} 16%, var(--surface))` : "var(--surface)")
+     .attr("stroke",d=>d.depth===0?"var(--root)": d.data.kind==="sub"?"var(--line)":color(d.data.grp))
+     .attr("stroke-dasharray",d=>(d._children)?"4 3":null);
+}
+function nodeW(d){const t=wrapLabel(d.data.name,d.data.kind); return textW(t,d.data.kind)*(d.depth===0?1.2:1)+(d.data.kind==="sub"?20:24);}
+
+function act(d){
+  if(d.children){d._children=d.children;d.children=null;}
+  else if(d._children){d.children=d._children;d._children=null;}
+  if(d.data.kind==="bab"||d.data.kind==="sub"){const b = d.data.kind==="sub"?d.parent:d; if(b.data.data){selected=b; showDetail(b.data.data,b.data.grp);} }
+  update();
+}
+function setDepth(max){h.each(d=>{const kids=d.children||d._children; if(!kids) return; if(d.depth<max){d.children=kids;d._children=null;} else {d._children=kids;d.children=null;}}); update();}
+document.getElementById("btnBab").onclick=()=>setDepth(2);
+document.getElementById("btnAll").onclick=()=>setDepth(3);
+
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+function showDetail(x,grp){
+  const url="https://github.com/ferryas-pens/dasar-sistem-informasi/blob/main/"+x.file;
+  document.getElementById("detail").style.setProperty("--acc",color(grp));
+  document.getElementById("detail").innerHTML = `
+   <div>
+     <p class="eyebrow" style="color:${color(grp)}">Bab ${x.n}</p>
+     <h2>${esc(x.t)}</h2>
+     <div class="meta"><span class="chip">${x.cp}</span><span class="chip">Minggu ${x.mg}</span><span class="chip">Bloom ${x.lv}</span></div>
+     <h3>Subbab</h3><ul>${x.sub.map(s=>`<li>${esc(s)}</li>`).join("")}</ul>
+     <h3>Studi kasus terpandu</h3><div class="case">${esc(x.kasus)}</div>
+   </div>
+   <div>
+     <h3 style="margin-top:0">Poin kunci dari Rangkuman</h3>
+     <ul>${x.poin.map(s=>`<li>${esc(s)}</li>`).join("")}</ul>
+     <h3>Berkas</h3><p style="margin:0"><a href="${url}" target="_blank" rel="noopener">${x.file}</a></p>
+   </div>`;
+}
+selected = h.children[0].children[0];
+showDetail(selected.data.data, selected.data.grp);
+update();
+</script>
+</body>
+</html>
